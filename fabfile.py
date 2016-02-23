@@ -58,12 +58,10 @@ def choosek(infn, outfn, maxk, **kwargs):
         for ii in xrange(1, int(maxk) + 1):
             print green('Running with K=%d ... '%ii)
             fast(infn, outfn, K=ii, **kwargs)
-            print green('done')
     print green('Choosing K ... ')
     cmd = '{run} python {choosek} --input={0}'.format(outfn, **CONFIG)
     output = local(cmd, capture=True)
     print red(output)
-    print green('done')
 
 
 @task

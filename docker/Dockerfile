@@ -7,29 +7,29 @@ ADD repositories /etc/apk/repositories
 
 RUN apk add --update \
     python \
-    py-pip \
     cython \
-    cython-dev \
     py-numpy@testing \
-    py-numpy-dev@testing \
     py-scipy@testing \
-    gsl
+    gsl \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN apk add --update --virtual build-dependencies \
+RUN apk add --update \
     python-dev \
     build-base \
     curl \
     gsl-dev \
-    && pip install pandas xlrd \
+    cython-dev \
+    py-numpy-dev@testing \
+    py-pip \
+    && pip install pandas xlrd python-slugify \
     && curl -s -k -L https://github.com/rajanil/fastStructure/archive/master.tar.gz | tar xz \
     && mv fastStructure-master fastStructure \
     && cd fastStructure/vars \
     && python setup.py build_ext --inplace \
     && cd .. \
     && python setup.py build_ext --inplace \
-    && apk del --force build-dependencies
-
-RUN apk del py-numpy-dev cython-dev && rm -rf /var/cache/apk/*
+    && apk del --force python-dev build-base curl gsl-dev cython-dev py-numpy-dev py-pip \
+    && rm -rf /var/lib/apt/lists/*
 
 ADD convert.py /usr/local/bin
 ADD plink.tgz /usr/local
