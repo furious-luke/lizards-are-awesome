@@ -1,10 +1,11 @@
+import os
 from fabric.api import local, task, hide
 from fabric.colors import red, green
 
 
 CONFIG = {
     'repo': 'furiousluke/laa:latest',
-    'run': 'docker run -it --rm -v `pwd`:/usr/local/app laa',
+    'run': 'docker run -it --rm -v `pwd`:/usr/local/app furiousluke/laa:latest',
     'plink': '/usr/local/plink/plink',
     'convert': '/usr/local/bin/convert.py',
     'fast': '/usr/local/fastStructure/structure.py',
@@ -66,15 +67,16 @@ def choosek(infn, outfn, maxk, **kwargs):
 
 
 @task
-def analyse(infn, outfn, maxk, **kwargs):
+def analyse(infn, maxk, **kwargs):
     plink(infn)
     choosek(infn, infn, maxk, **kwargs)
 
 
 @task
-def all(infn, outfn, maxk, **kwargs):
-    convert(infn, infn, **kwargs)
-    analyse(infn, outfn, maxk, **kwargs)
+def all(infn, maxk, **kwargs):
+    conv_outfn = os.path.splitext(infn)[0]
+    convert(infn, conv_outfn + '.ped', **kwargs)
+    analyse(conv_outfn, maxk, **kwargs)
 
 
 @task
