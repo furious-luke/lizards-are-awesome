@@ -3,6 +3,11 @@
 A Docker based workflow for performing a Plink/fastStructure analysis from Excel data.
 
 
+## External Packages
+
+Using the excellent `Plink` package: http://pngu.mgh.harvard.edu/~purcell/plink/
+
+
 ## Installation
 
 Dependencies:
