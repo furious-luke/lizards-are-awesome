@@ -5,7 +5,7 @@ from fabric.colors import red, green
 
 CONFIG = {
     'repo': 'furiousluke/laa:latest',
-    'run': 'docker run -it --rm -v `pwd`:/usr/local/app furiousluke/laa:latest',
+    'run': 'docker run -u=`stat -c "%u:%g" .` -it --rm -v `pwd`:/usr/local/app furiousluke/laa:latest',
     'plink': '/usr/local/plink/plink',
     'convert': '/usr/local/bin/convert.py',
     'fast': '/usr/local/fastStructure/structure.py',
