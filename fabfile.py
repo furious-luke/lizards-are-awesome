@@ -1,20 +1,33 @@
 import os
+import sys
 from fabric.api import local, task, hide
 from fabric.colors import red, green
 
 
-CONFIG = {
+def setup_config(cfg):
+    if sys.platform in ['darwin', 'windows']:
+        user = ''
+    else:
+        uid = os.getuid()
+        gid = os.getegid()
+        user = ' -u{}:{}'.format(uid, guid)
+    pwd = os.getcwd()
+    cfg['run'] = cfg['run'].format(user=user, pwd=pwd)
+    return cfg
+
+
+CONFIG = setup_config({
     'repo': 'furiousluke/laa:latest',
-    'run': 'docker run -u=`stat -c "%u:%g" .` -it --rm -v `pwd`:/usr/local/app furiousluke/laa:latest',
+    'run': 'docker run{user} -it --rm -v {pwd}:/usr/local/app furiousluke/laa:latest',
     'plink': '/usr/local/plink/plink',
     'convert': '/usr/local/bin/convert.py',
     'fast': '/usr/local/fastStructure/structure.py',
     'choosek': '/usr/local/fastStructure/chooseK.py',
-}
+})
 
 
 def parse_bool(kwargs, key):
-    return kwargs.get('merge', '').lower() in ['yes', 'true', '1', 'y', True]
+    return kwargs.get(key, '').lower() in ['yes', 'true', '1', 'y', True]
 
 
 @task
