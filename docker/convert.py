@@ -36,8 +36,10 @@ def read_and_merge(args):
             np.ones(3, dtype=int)*1,
             np.ones(3, dtype=int)*2, '-'*3
         ])
-    else:
+    elif not args.csv:
         sheet1 = pd.read_excel(args.xls[0], sheetname=args.sheet, header=None)
+    else:
+        sheet1 = pd.read_csv(args.xls[0], header=None)
     headers = sheet1[:2].copy()
     sheet1 = sheet1[2:]
     shape = (sheet1.shape[0], sheet1.shape[1])
@@ -57,7 +59,10 @@ def read_sheets(args):
     if args.merge:
         return merge_sheets_with_headers(args)
     else:
-        sheet1 = pd.read_excel(args.xls[0], sheetname=args.sheet, header=None)
+        if not args.csv:
+            sheet1 = pd.read_excel(args.xls[0], sheetname=args.sheet, header=None)
+        else:
+            sheet1 = pd.read_csv(args.xls[0], header=None)
         shape = ((sheet1.shape[0] - 6)/2, sheet1.shape[1])
         data = sheet1
     return data, shape
@@ -80,6 +85,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Transpose an Excel spreadsheet.')
     parser.add_argument('xls', metavar='INPUT', nargs=1, help='input Excel spreadsheet')
+    parser.add_argument('-c', '--csv', action='store_true', help='sheet stored in CSV format')
     parser.add_argument('-s', '--sheet', default='Sheet1', help='sheet to convert')
     parser.add_argument('-o', '--output', default='output.ped', help='output filename')
     parser.add_argument('-m', '--merge', action='store_true', help='merge sheets')

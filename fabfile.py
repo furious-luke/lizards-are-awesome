@@ -13,6 +13,10 @@ CONFIG = {
 }
 
 
+def parse_bool(kwargs, key):
+    return kwargs.get('merge', '').lower() in ['yes', 'true', '1', 'y', True]
+
+
 @task
 def init():
     local('docker pull {repo}'.format(**CONFIG))
@@ -21,8 +25,10 @@ def init():
 @task
 def convert(infn, outfn=None, **kwargs):
     opts = []
-    if kwargs.get('merge', '').lower() in ['yes', 'true', '1', 'y']:
+    if parse_bool(kwargs, 'merge'):
         opts.append('-m')
+    if parse_bool(kwargs, 'csv'):
+        opts.append('-c')
     if opts:
         opts = ' ' + ' '.join(opts)
     else:
