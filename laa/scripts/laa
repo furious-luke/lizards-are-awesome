@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import argparse
 
 import laa
@@ -16,19 +18,19 @@ def plink(args):
 
 
 def fast(args):
-    laa.fast(args.input[0], args.output[0])
+    laa.fast(args.input[0], args.output[0], args.k)
 
 
 def choosek(args):
-    laa.choosek(args.input, args.output, args.maxk)
+    laa.choosek(args.input[0], args.output[0], args.maxk)
 
 
 def analyse(args):
-    laa.analyse(args.input, args.maxk)
+    laa.analyse(args.input[0], args.maxk)
 
 
 def all(args):
-    laa.all(args.input, args.maxk)
+    laa.all(args.input[0], args.maxk)
 
 
 if __name__ == '__main__':
@@ -53,6 +55,7 @@ if __name__ == '__main__':
     fast_parser = subparsers.add_parser('fast', help='run fastStructure')
     fast_parser.add_argument('input', nargs=1, default='conv', help='input filename base')
     fast_parser.add_argument('output', nargs=1, default='output', help='output filename base')
+    fast_parser.add_argument('k', type=int, default=2, help='k value')
     fast_parser.set_defaults(func=fast)
 
     choosek_parser = subparsers.add_parser('choosek', help='calculate k value')
@@ -63,7 +66,6 @@ if __name__ == '__main__':
 
     analyse_parser = subparsers.add_parser('analyse', help='calculate k value')
     analyse_parser.add_argument('input', nargs=1, default='conv', help='input filename base')
-    analyse_parser.add_argument('output', nargs=1, default='output', help='output filename base')
     analyse_parser.add_argument('--maxk', type=int, default=3, help='maximum k value')
     analyse_parser.set_defaults(func=analyse)
 

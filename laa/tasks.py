@@ -30,7 +30,7 @@ def local(cmd):
     subprocess.check_call(cmd, shell=True)
 
 
-def init(args):
+def init():
     local('docker pull {repo}'.format(**CONFIG))
 
 
@@ -46,7 +46,7 @@ def convert(input, output, recombined=False, format='csv'):
         opts = ''
     cmd = '{run} python {convert}{1} {0}'.format(input, opts, **CONFIG)
     if output:
-        cmd += ' -o ' + output[0]
+        cmd += ' -o ' + output
     local(cmd)
 
 
@@ -55,12 +55,8 @@ def plink(input):
     local(cmd)
 
 
-def fast(input, output, **kwargs):
-    opt_map = {
-        'K': '-K ',
-    }
-    opts = ['--input=' + input, '--output=' + output]
-    opts.extend([opt_map.get(k, '--' + k + '=') + str(v) for k, v in kwargs.items()])
+def fast(input, output, k):
+    opts = ['--input=' + input, '--output=' + output, '-K', str(k)]
     opts = ' '.join(opts)
     cmd = '{run} python {fast} {0}'.format(opts, **CONFIG)
     local(cmd)
@@ -70,12 +66,9 @@ def choosek(input, output, maxk, **kwargs):
     skipfast = kwargs.pop('skipfast', '').lower()
     if skipfast not in ['true', 'yes', '1', 'y']:
         for ii in xrange(1, int(maxk) + 1):
-            print green('Running with K=%d ... '%ii)
-            fast(input, output, K=ii, **kwargs)
-    print green('Choosing K ... ')
+            fast(input, output, k=ii)
     cmd = '{run} python {choosek} --input={0}'.format(output, **CONFIG)
-    output = local(cmd, capture=True)
-    print red(output)
+    local(cmd)
 
 
 def analyse(input, maxk, **kwargs):
