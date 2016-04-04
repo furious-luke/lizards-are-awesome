@@ -6,11 +6,15 @@ import subprocess
 def setup_config(cfg):
     if sys.platform in ['darwin', 'win32']:
         user = ''
+        pwd = os.getcwd()
+        if sys.platgorm == 'win32':
+            pwd = pwd.replace(':\\', '/')
+            pwd = pwd.replace('\\', '/')
     else:
         uid = os.getuid()
         gid = os.getegid()
         user = ' -u {}:{}'.format(uid, gid)
-    pwd = os.getcwd()
+        pwd = os.getcwd()
     cfg['run'] = cfg['run'].format(user=user, pwd=pwd)
     return cfg
 
