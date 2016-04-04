@@ -63,3 +63,5 @@ target/
 
 # No Excel files.
 **.xls*
+
+**~
