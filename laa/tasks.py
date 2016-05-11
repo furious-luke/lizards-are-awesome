@@ -66,9 +66,8 @@ def fast(input, output, k):
     local(cmd)
 
 
-def choosek(input, output, maxk, **kwargs):
-    skipfast = kwargs.pop('skipfast', '').lower()
-    if skipfast not in ['true', 'yes', '1', 'y']:
+def choosek(input, output, maxk, skipfast=False):
+    if not skipfast:
         for ii in xrange(1, int(maxk) + 1):
             fast(input, output, k=ii)
     cmd = '{run} python {choosek} --input={0}'.format(output, **CONFIG)
