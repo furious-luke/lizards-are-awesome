@@ -7,7 +7,7 @@ def setup_config(cfg):
     if sys.platform in ['darwin', 'win32']:
         user = ''
         pwd = os.getcwd()
-        if sys.platgorm == 'win32':
+        if sys.platform == 'win32':
             pwd = pwd.replace(':\\', '/')
             pwd = pwd.replace('\\', '/')
     else:

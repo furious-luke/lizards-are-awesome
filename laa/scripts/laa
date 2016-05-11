@@ -22,7 +22,7 @@ def fast(args):
 
 
 def choosek(args):
-    laa.choosek(args.input[0], args.output[0], args.maxk)
+    laa.choosek(args.input[0], args.output[0], args.maxk, skipfast=args.skipfast)
 
 
 def analyse(args):
@@ -62,6 +62,7 @@ if __name__ == '__main__':
     choosek_parser.add_argument('input', nargs=1, default='conv', help='input filename base')
     choosek_parser.add_argument('output', nargs=1, default='output', help='output filename base')
     choosek_parser.add_argument('--maxk', type=int, default=3, help='maximum k value')
+    choosek_parser.add_argument('--skipfast', action='store_true', help='skip running fastStructure')
     choosek_parser.set_defaults(func=choosek)
 
     analyse_parser = subparsers.add_parser('analyse', help='calculate k value')
