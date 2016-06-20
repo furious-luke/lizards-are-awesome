@@ -2,7 +2,7 @@ import os
 from setuptools import setup, find_packages
 
 setup(
-    name='laa',
+    name='lizards-are-awesome',
     version='0.1',
     author='Luke Hodkinson',
     author_email='furious.luke@gmail.com',
