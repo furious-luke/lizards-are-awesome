@@ -74,6 +74,15 @@ If you happen to be installing on Windows, then there are a couple of extra requ
  * MsysGit
 
 
+## Important
+
+We've found that Docker has issues when running on Windows. While you may be able
+to install LAA on a Windows system, the accuracy of results may be compromised.
+
+To install on Windows, we recommend using a virtual machine running an Ubuntu
+installation.
+
+
 ## Installation
 
 Begin by installing all of the dependencies for your operating system as
