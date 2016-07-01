@@ -104,7 +104,7 @@ below, under `usage`).
 From an open system terminal, install the LAA Python interface with:
 
 ```bash
-pip install laa
+pip install lizards-are-awesome
 ```
 
 Next, from a system terminal, download and prepare the `laa` docker image. This
