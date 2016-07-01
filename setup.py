@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='lizards-are-awesome',
-    version='0.2',
+    version='0.3.0',
     author='Luke Hodkinson',
     author_email='furious.luke@gmail.com',
     maintainer='Luke Hodkinson',

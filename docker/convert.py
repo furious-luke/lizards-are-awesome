@@ -8,12 +8,18 @@ import pandas as pd
 from slugify import slugify
 
 
+def do_slugify(txt):
+    try:
+        return slugify(txt)
+    except TypeError:
+        return slugify(txt.decode())
+
 def add_headers(args, data, headers):
     data = pd.DataFrame(np.zeros((6, data.shape[1]), dtype=int)).append(data, ignore_index=True)
     data[:2] = headers
     for ii in range(data.shape[1]):
-        data.ix[0,ii] = slugify(data.ix[0,ii])
-        data.ix[1,ii] = slugify(data.ix[1,ii])
+        data.ix[0,ii] = do_slugify(data.ix[0,ii])
+        data.ix[1,ii] = do_slugify(data.ix[1,ii])
     return data
 
 def merge_sheets(s1, s2):
@@ -38,17 +44,25 @@ def read_and_merge(args):
         ])
     elif not args.csv:
         sheet1 = pd.read_excel(args.xls[0], sheetname=args.sheet, header=None)
+        sheet1 = sheet1.astype(str)
     else:
-        sheet1 = pd.read_csv(args.xls[0], header=None)
+        sheet1 = pd.read_csv(args.xls[0], header=None, dtype=str)
     headers = sheet1[:2].copy()
     sheet1 = sheet1[2:]
     shape = (sheet1.shape[0], sheet1.shape[1])
     sheet2 = sheet1.copy(deep=True)
-    sheet1.replace(0, 2, inplace=True)
-    sheet1.replace('-', 0, inplace=True)
-    sheet2.replace(2, 1, inplace=True)
-    sheet2.replace(0, 2, inplace=True)
-    sheet2.replace('-', 0, inplace=True)
+    # if args.csv:
+    sheet1.replace('0', '2', inplace=True)
+    sheet1.replace('-', '0', inplace=True)
+    sheet2.replace('2', '1', inplace=True)
+    sheet2.replace('0', '2', inplace=True)
+    sheet2.replace('-', '0', inplace=True)
+    # else:
+    # sheet1.replace(0, 2, inplace=True)
+    # sheet1.replace('-', 0, inplace=True)
+    # sheet2.replace(2, 1, inplace=True)
+    # sheet2.replace(0, 2, inplace=True)
+    # sheet2.replace('-', 0, inplace=True)
     return merge_sheets(sheet1, sheet2), shape, headers
 
 def merge_sheets_with_headers(args):

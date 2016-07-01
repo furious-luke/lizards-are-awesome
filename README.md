@@ -35,12 +35,20 @@ In addition to the conversion operation, there are additional functions
 to perform analysis runs of Plink and fastStructre, passing the data files
 between the two programs automatically.
 
+In addition to the conversion operation, LAA automatically initiates 
+the program Plink on the generated ped and map files, and the 
+resulting bed, bim and fam files are then passed on to and analysed 
+with fastStructure. The user can choose a maximum of K(number of 
+populations) to be analysed by fastStructure. Output files include 
+the meanQ value for each individual, defining the mean probability 
+to belong to any one of the populations K1 to Kx.
+
 
 ## Design Decisions
 
 ### Why Docker?
 
-`Plink` is written for Linux based operating systems. As such on a Linux system
+Plink is written for Linux based operating systems. As such on a Linux system
 all operations could be performed directly, without the need for any kind of
 virtualisation layer. But, in order to support researchers using Windows based
 operating systems the decision was made to leverage Docker virtualisation.
@@ -58,7 +66,7 @@ of Docker over other systems, like VirtualBox or VMWare, are:
 
 Python is a powerful and expressive scripting language. It comes with many
 diverse packages, and has excellent support from developers (for example,
-`fasStructure` is written in Python).
+fastStructure is written in Python).
 
 
 ## Dependencies
@@ -76,11 +84,13 @@ If you happen to be installing on Windows, then there are a couple of extra requ
 
 ## Important
 
-We've found that Docker has issues when running on Windows. While you may be able
-to install LAA on a Windows system, the accuracy of results may be compromised.
+We've found that Docker has issues when running on Windows, resulting in faulty data
+transformation. While you may be able to install LAA on a Windows system, the accuracy of 
+results are likely to be compromised.
 
 To install on Windows, we recommend using a virtual machine running an Ubuntu
-installation.
+installation, e.g. VMWare All steps detailed below under Installation will have to be 
+performed through the Virtual Machine, including installing Docker.
 
 
 ## Installation
@@ -117,169 +127,120 @@ Windows operating systems use the Docker quick start terminal.
 
 LAA accepts XLSX Excel formats and CSV. Unfortunately, XLSX is extremely slow
 to parse using opensource utilities. As such we recommend converting your Excel
-data to CSV before use with LAA (this is easy to do using Microsoft Office, or
-opensource spreadsheet tools, like Libre Office).
+data to CSV before use with LAA (simply open and then save as csv file using
+Microsoft Office or opensource spreadsheet tools, like Libre 
+Office).
 
-The data may be given to LAA in either a recombined or raw format. The raw format
-is more typical, as LAA handles recombination automatically, so we'll only discuss
-the raw format.
+The data sheet should contain only columns with DArTseq SNP data 
+(i.e. 0, 1, 2 and -), all other columns have to be removed.
+The first row should contain the name of the population each 
+individual belongs to (e.g. species), the second row should contain 
+the ID of each individual. All following rows contain the SNP data.
 
-The first two rows of the raw format should contain strings, defining the human
-readable names of the columns, and the short-hand names of the columns. All following
-rows contain the (??) data.
-
-A short, completely fictitious, example:
+A short, fictitious, example:
 
 <table class="table table-bordered table-hover table-condensed">
-<tbody><tr><td>AA</td>
-<td>AB</td>
-<td>AC</td>
-<td>AD</td>
-<td>AE</td>
-<td>AF</td>
-<td>AG</td>
-<td>AH</td>
-<td>AI</td>
-<td>AJ</td>
+<tbody><tr><td>Pminima</td>
+<td>Pminima</td>
+<td>Pminor</td>
+<td>Pminima</td>
+<td>Pminor</td>
+<td>Pminima</td>
 </tr>
-<tr><td>aa</td>
-<td>ab</td>
-<td>ac</td>
-<td>ad</td>
-<td>ae</td>
-<td>af</td>
-<td>ag</td>
-<td>ah</td>
-<td>ai</td>
-<td>aj</td>
+<tr><td>lizard1</td>
+<td>lizard2</td>
+<td>lizard15</td>
+<td>lizard39</td>
+<td>lizard40</td>
+<td>lizard44</td>
 </tr>
 <tr><td>0</td>
 <td>1</td>
+<td>1</td>
 <td>2</td>
-<td>3</td>
-<td>4</td>
-<td>5</td>
-<td>6</td>
-<td>7</td>
-<td>8</td>
-<td>9</td>
+<td>1</td>
+<td>1</td>
 </tr>
-<tr><td>10</td>
-<td>11</td>
-<td>12</td>
-<td>13</td>
-<td>14</td>
-<td>15</td>
-<td>16</td>
-<td>17</td>
-<td>18</td>
-<td>19</td>
+<tr><td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
 </tr>
-<tr><td>20</td>
-<td>21</td>
-<td>22</td>
-<td>23</td>
-<td>24</td>
-<td>25</td>
-<td>26</td>
-<td>27</td>
-<td>28</td>
-<td>29</td>
+<tr><td>1</td>
+<td>-</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
 </tr>
-<tr><td>30</td>
-<td>31</td>
-<td>32</td>
-<td>33</td>
-<td>34</td>
-<td>35</td>
-<td>36</td>
-<td>37</td>
-<td>38</td>
-<td>39</td>
+<tr><td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>-</td>
+<td>0</td>
 </tr>
-<tr><td>40</td>
-<td>41</td>
-<td>42</td>
-<td>43</td>
-<td>44</td>
-<td>45</td>
-<td>46</td>
-<td>47</td>
-<td>48</td>
-<td>49</td>
+<tr><td>2</td>
+<td>2</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>2</td>
 </tr>
-<tr><td>50</td>
-<td>51</td>
-<td>52</td>
-<td>53</td>
-<td>54</td>
-<td>55</td>
-<td>56</td>
-<td>57</td>
-<td>58</td>
-<td>59</td>
+<tr><td>2</td>
+<td>2</td>
+<td>1</td>
+<td>2</td>
+<td>1</td>
+<td>0</td>
 </tr>
-<tr><td>60</td>
-<td>61</td>
-<td>62</td>
-<td>63</td>
-<td>64</td>
-<td>65</td>
-<td>66</td>
-<td>67</td>
-<td>68</td>
-<td>69</td>
+<tr><td>1</td>
+<td>1</td>
+<td>2</td>
+<td>1</td>
+<td>2</td>
+<td>1</td>
 </tr>
-<tr><td>70</td>
-<td>71</td>
-<td>72</td>
-<td>73</td>
-<td>74</td>
-<td>75</td>
-<td>76</td>
-<td>77</td>
-<td>78</td>
-<td>79</td>
+<tr><td>1</td>
+<td>1</td>
+<td>1</td>
+<td>2</td>
+<td>0</td>
+<td>1</td>
 </tr>
-<tr><td>80</td>
-<td>81</td>
-<td>82</td>
-<td>83</td>
-<td>84</td>
-<td>85</td>
-<td>86</td>
-<td>87</td>
-<td>88</td>
-<td>89</td>
+<tr><td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
 </tr>
-<tr><td>90</td>
-<td>91</td>
-<td>92</td>
-<td>93</td>
-<td>94</td>
-<td>95</td>
-<td>96</td>
-<td>97</td>
-<td>98</td>
-<td>99</td>
+<tr><td>-</td>
+<td>1</td>
+<td>2</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
 </tr>
 </tbody></table>
 
 And, in CSV format:
 
 ```csv
-AA,AB,AC,AD,AE,AF,AG,AH,AI,AJ
-aa,ab,ac,ad,ae,af,ag,ah,ai,aj
-0,1,2,3,4,5,6,7,8,9
-10,11,12,13,14,15,16,17,18,19
-20,21,22,23,24,25,26,27,28,29
-30,31,32,33,34,35,36,37,38,39
-40,41,42,43,44,45,46,47,48,49
-50,51,52,53,54,55,56,57,58,59
-60,61,62,63,64,65,66,67,68,69
-70,71,72,73,74,75,76,77,78,79
-80,81,82,83,84,85,86,87,88,89
-90,91,92,93,94,95,96,97,98,99
+Pminima,Pminima,Pminor,Pminima,Pminor,Pminima
+lizard1,lizard2,lizard15,lizard39,lizard40,lizard44
+0,1,1,2,1,1
+0,0,0,1,0,0
+1,-,1,0,1,1
+0,0,1,0,-,0
+2,2,1,1,1,2
+2,2,1,2,1,0
+1,1,2,1,2,1
+1,1,1,2,0,1
+0,0,0,0,0,0
+-,1,2,1,1,1
 ```
 
 ### Location
@@ -361,3 +322,5 @@ You may also get help for a specific command with something like:
 ```bash
 laa convert -h
 ```
+
+where `convert` may be replaced with the respective command help is sought for.
