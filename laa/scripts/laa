@@ -10,7 +10,7 @@ def init(args):
 
 
 def convert(args):
-    laa.convert(args.input[0], args.output[0], args.recombined, args.format)
+    laa.convert(args.input[0], args.output[0], args.recombined, args.format, has_map=args.has_map)
 
 
 def plink(args):
@@ -44,6 +44,7 @@ if __name__ == '__main__':
     convert_parser = subparsers.add_parser('convert', help='convert Excel or CSV into transposed format')
     convert_parser.add_argument('input', nargs=1, help='input filename')
     convert_parser.add_argument('output', nargs=1, default='conv.ped', help='output filename')
+    convert_parser.add_argument('--has-map', action='store_true', help='has map data')
     convert_parser.add_argument('--recombined', '-r', action='store_true', help='data is already recombined')
     convert_parser.add_argument('--format', '-f', choices=['xls', 'csv'], default='csv')
     convert_parser.set_defaults(func=convert)

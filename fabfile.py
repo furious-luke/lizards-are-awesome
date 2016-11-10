@@ -10,7 +10,7 @@ def setup_config(cfg):
     else:
         uid = os.getuid()
         gid = os.getegid()
-        user = ' -u{}:{}'.format(uid, guid)
+        user = ' -u{}:{}'.format(uid, gid)
     pwd = os.getcwd()
     cfg['run'] = cfg['run'].format(user=user, pwd=pwd)
     return cfg
@@ -75,12 +75,12 @@ def choosek(infn, outfn, maxk, **kwargs):
     skipfast = kwargs.pop('skipfast', '').lower()
     if skipfast not in ['true', 'yes', '1', 'y']:
         for ii in xrange(1, int(maxk) + 1):
-            print green('Running with K=%d ... '%ii)
+            print(green('Running with K=%d ... '%ii))
             fast(infn, outfn, K=ii, **kwargs)
-    print green('Choosing K ... ')
+    print(green('Choosing K ... '))
     cmd = '{run} python {choosek} --input={0}'.format(outfn, **CONFIG)
     output = local(cmd, capture=True)
-    print red(output)
+    print(red(output))
 
 
 @task

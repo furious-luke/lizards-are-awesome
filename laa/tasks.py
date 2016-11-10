@@ -38,12 +38,14 @@ def init():
     local('docker pull {repo}'.format(**CONFIG))
 
 
-def convert(input, output, recombined=False, format='csv'):
+def convert(input, output, recombined=False, format='csv', has_map=False):
     opts = []
     if not recombined:
         opts.append('-m')
     if format == 'csv':
         opts.append('-c')
+    if has_map:
+        opts.append('--has-map')
     if opts:
         opts = ' ' + ' '.join(opts)
     else:

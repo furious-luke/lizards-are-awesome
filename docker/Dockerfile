@@ -8,7 +8,8 @@ ADD repositories /etc/apk/repositories
 RUN apk add --update \
     python \
     cython \
-    py-numpy@testing \
+    openblas@community \
+    py-numpy@community \
     py-scipy@testing \
     gsl \
     && rm -rf /var/lib/apt/lists/*
@@ -19,8 +20,9 @@ RUN apk add --update \
     curl \
     gsl-dev \
     cython-dev \
-    py-numpy-dev@testing \
-    py-pip \
+    py-numpy-dev@community \
+    openblas-dev@community \
+    py2-pip \
     && pip install pandas xlrd python-slugify \
     && curl -s -k -L https://github.com/rajanil/fastStructure/archive/master.tar.gz | tar xz \
     && mv fastStructure-master fastStructure \
